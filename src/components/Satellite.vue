@@ -21,30 +21,30 @@
       <NumberChild color="1" :endVal="call.b" duration="5000" WrittenWords="总计" />
     </div>
     <div class="NumChild twoChild Carrierterminal" v-show="show">
-      <div @click="fn('终端监控')">
-        <span class="title">载波状态</span>
+      <div>
+        <span class="title" @click="fn('终端监控')">载波状态</span>
         <PieChild type="0" myEcharts="One" />
       </div>
-      <div @click="fn('终端监控')">
-        <span class="title">终端监控</span>
+      <div>
+        <span class="title" @click="fn('终端监控')">终端监控</span>
         <PieChild type="1" myEcharts="One1" />
       </div>
     </div>
-    <div class="NumChild Loadingcondition" v-show="show" @click="fn('承载情况')">
-      <span class="title">承载情况</span>
+    <div class="NumChild Loadingcondition" v-show="show">
+      <span class="title" @click="fn('承载情况')">承载情况</span>
       <LineChild :datas="bearing" type="0" myEcharts="Two" />
     </div>
     <!-- 右侧 -->
-    <div class="NumChild Alarminformation" v-show="show" @click="fn('告警信息')">
-      <span class="title">告警信息</span>
+    <div class="NumChild Alarminformation" v-show="show">
+      <span class="title" @click="fn('告警信息')">告警信息</span>
       <Alarminformation :datas="warning" />
     </div>
-    <div class="NumChild throughput" v-show="show" @click="fn('IP吞吐量')">
-      <span class="title">IP吞吐量</span>
+    <div class="NumChild throughput" v-show="show">
+      <span class="title" @click="fn('IP吞吐量')">IP吞吐量</span>
       <LineChild datas="200" type="1" myEcharts="Three" />
     </div>
-    <div class="NumChild system" v-show="show" @click="fn('系统运行状况')">
-      <span class="title">系统运行状况</span>
+    <div class="NumChild system" v-show="show">
+      <span class="title" @click="fn('系统运行状况')">系统运行状况</span>
       <LineChild datas="200" type="2" myEcharts="Four" />
     </div>
     <!-- 遮罩层 -->
@@ -139,7 +139,7 @@ export default {
       // this.socket = new WebSocket("ws://172.20.10.13:8080/" + x + "/" + y);//ios
       this.socket = new WebSocket("ws://192.168.43.201:8080/" + x + "/" + y);
       this.socket.onmessage = function(e) {
-        if (e.data == "您已成功连接！" || e.data == "Success！") {
+        if (e.data == "您已成功连接！" || e.data == "Success！"||e.data == "成功连接！") {
           return false;
         }
         let data = JSON.parse(e.data);
@@ -156,7 +156,7 @@ export default {
           that.$bus.emit("ueTimeslot", data.result);
         }
         if (x == "ue") {
-          // console.log(data);
+          console.log(data);
           that.$bus.emit("ue", data.result);
         }
         if (x == "bearing") {
@@ -182,7 +182,7 @@ export default {
           that.$bus.emit("ips", data.result);
         }
         if (x == "system") {
-          console.log(data.result)
+          // console.log(data.result)
           data.result.createTime = that.GetTimeHM(data.result.createTime);
           that.$bus.emit("systems", data.result);
         }
@@ -317,6 +317,7 @@ export default {
   color: rgba(0, 217, 255, 1);
   text-shadow: 0px 0px 5px rgba(0, 217, 255, 0.75);
   box-sizing: border-box;
+  cursor: pointer;
 }
 /*  */
 .twoChild {

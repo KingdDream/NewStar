@@ -3,7 +3,7 @@
     <div class="TimeDay">{{day}}</div>
     <div class="TimeFunction">
       系统已运行
-      <span>{{time}}</span>
+      <span>{{'23天15小时'}}</span>
     </div>
     <div class="TimeHourL">{{hour}}</div>
   </div>
@@ -15,13 +15,13 @@ export default {
     return {
       day: "",
       hour: "",
-      time: "0天00小时",
+      time: "23天15小时",
       timer:0
 
     };
   },
   mounted() {
-    this.fn()
+   this.fn()
     
   },
   methods: {

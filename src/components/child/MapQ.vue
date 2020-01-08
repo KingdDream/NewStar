@@ -51,6 +51,8 @@ export default {
             autoRotate: true,
             autoRotateAfterStill: 10,
             distance: 120,
+            maxDistance:120,
+            minDistance:120,
             autoRotateSpeed: 4
           },
           layers: [
