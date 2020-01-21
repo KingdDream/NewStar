@@ -70,8 +70,8 @@ export default {
 .NumConcent > .num,
 .NumConcent1 > .num {
   font-family: "PangMenZhengDaoBiao";
-  font-size: 48px;
-  letter-spacing: 6px;
+  font-size:38px;
+  letter-spacing: 2px;
   color: rgba(0, 217, 255, 1);
   text-shadow: 0px 0px 5px rgba(0, 217, 255, 0.75);
 }

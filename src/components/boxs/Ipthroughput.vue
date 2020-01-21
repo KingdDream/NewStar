@@ -1,37 +1,53 @@
 <template>
-  <div id="MaskBox">
+  <div id="MaskBox" v-if="myData==null?show:!show">
     <div>
       <span>上下行数据流量</span>
-      <Ipthroughput datas="200" myEcharts="A" />
+      <Ipthroughput :datas="myData" myEcharts="A" />
     </div>
     <div>
       <span>上下行链路流量</span>
-      <Ipthroughput datas="200" myEcharts="B" />
+      <Ipthroughput :datas="myData" myEcharts="B" />
     </div>
     <div>
       <span>rlc上下行</span>
-      <Ipthroughput datas="200" myEcharts="C" />
+      <Ipthroughput :datas="myData" myEcharts="C" />
     </div>
     <div>
       <span>pdcp上下行</span>
-      <Ipthroughput datas="200" myEcharts="D" />
+      <Ipthroughput :datas="myData" myEcharts="D" />
     </div>
     <div>
       <span>rrc上下行</span>
-      <Ipthroughput datas="200" myEcharts="E" />
+      <Ipthroughput :datas="myData" myEcharts="E" />
     </div>
   </div>
 </template>
 
 <script>
+import {findLatest} from "../../request/api"
 export default {
   data() {
-    return {};
+    return {
+      show:false,
+      myData:null
+    };
   },
   components: {
     Ipthroughput:() =>import("@/components/child/LineIpthroughput"),
   },
-  methods: {}
+  mounted() {this.findLatest()},
+  methods: {
+    findLatest(){
+      findLatest().then(res => {
+        this.myData = res.result
+        console.log(this.myData)
+        // console.log(res.result)
+      }).catch(res => {
+        this.$toast("数据异常请联系客服人员！");
+      })
+    }
+
+  }
 };
 </script>
 

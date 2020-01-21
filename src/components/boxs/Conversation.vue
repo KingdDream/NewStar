@@ -4,25 +4,36 @@
       <div class="search-list">
         <div>
           <span>通话时长：</span>
-          <input type="text" name placeholder="不限" class="startTime" />
+          <input
+            type="text"
+            v-model="searchData.searchCall"
+            name
+            placeholder="不限"
+            class="startTime"
+          />
           <b></b>
-          <input type="text" name placeholder="不限" class="endTime" />
+          <input type="text" v-model="searchData.searchCallEnd" name placeholder="不限" class="endTime" />
         </div>
         <div>
           <span>主叫号码：</span>
-          <input type="text" name id placeholder="不限" />
+          <input type="text" v-model="searchData.searchStart" id placeholder="不限" />
         </div>
         <div>
           <span>日期：</span>
-          <el-date-picker v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker
+            v-model="searchData.searchDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期"
+          ></el-date-picker>
         </div>
         <div>
           <span>挂断方：</span>
-          <input type="text" name id placeholder="不限" />
+          <input type="text" v-model="searchData.searchEnd" id placeholder="不限" />
         </div>
         <div>
           <span>状态：</span>
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="searchData.searchType" placeholder="请选择">
             <el-option
               v-for="(item,index) in options"
               :key="index"
@@ -32,7 +43,7 @@
           </el-select>
         </div>
       </div>
-      <div class="table-list">
+      <div class="table-list" v-if="myData==null?false:true">
         <div class="table-head">
           <span>
             <el-checkbox
@@ -49,172 +60,157 @@
           <span>未接次数</span>
           <span>操作</span>
         </div>
-        <div class="table-child" v-for="(item,index) in cities" :key="index">
+        <div class="table-child" v-for="(item,index) in myData" :key="index">
           <span>
             <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-              <el-checkbox :label="item" :key="item"></el-checkbox>
+              <el-checkbox :label="cities[index]" :key="index"></el-checkbox>
             </el-checkbox-group>
           </span>
-          <span>{{index+1}}</span>
-          <span>2017-10-31 23:12:20</span>
-          <span>888888</span>
-          <span>888s</span>
-          <span>88s</span>
-          <span>0</span>
+          <span>{{(index+1)}}</span>
+          <span>{{item.call_time}}</span>
+          <span>{{item.call_num}}</span>
+          <span>{{item.wait_time}}</span>
+          <span>{{item.talk_time}}</span>
+          <span>{{item.call_state}}</span>
           <span>删除</span>
         </div>
-        <!-- <el-table
-          ref="multipleTable"
-          :data="tableData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column label="日期" width="120">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
-          </el-table-column>
-          <el-table-column prop="name" label="姓名" width="120"></el-table-column>
-          <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
-        </el-table> -->
       </div>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page.sync="currentPage3"
-        :page-size="100"
+        :current-page.sync="currentPage"
+        :page-size="pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000"
+        :total="pageTotal"
       ></el-pagination>
     </div>
-    <div class="conversationRight">
+    <div class="conversationRight" v-if="pieData==null?false:true">
       <div>
-        <PieChilds myEcharts="jt" titleName="接通率" />
-        <PieChilds myEcharts="dh" titleName="掉话率" />
-        <PieChilds myEcharts="hj" titleName="呼叫成功率" />
+        <PieChilds myEcharts="jt" :dates="pieData.called_ok_ratio" titleName="接通率" />
+        <PieChilds myEcharts="dh" :dates="pieData.call_loss_ratio" titleName="掉话率" />
+        <PieChilds myEcharts="hj" :dates="pieData.call_ok_ratio" titleName="呼叫成功率" />
       </div>
       <div>
-        <NumberChilds color="0" :endVal="99999" duration="3000" WrittenWords="当前" />
-        <NumberChilds color="1" :endVal="99999" duration="3000" WrittenWords="总计" />
+        <NumberChilds color="0" :endVal="pieData.calling_num" duration="3000" WrittenWords="当前" />
+        <NumberChilds color="1" :endVal="pieData.calling_total" duration="3000" WrittenWords="总计" />
       </div>
-      <!-- <el-date-picker v-model="value1" type="date" placeholder="选择日期"></el-date-picker> -->
     </div>
   </div>
 </template>
 
 <script>
-// import Vue from "vue";
-// import {
-//   Button,
-//   DatePicker,
-//   Pagination,
-//   Icon,
-//   Option,
-//   Select,
-//   Checkbox,
-//   CheckboxGroup
-// } from "element-ui";
-// Vue.use(DatePicker);
-// Vue.use(Pagination);
-// Vue.use(Icon);
-// Vue.use(Option);
-// Vue.use(Select);
-// Vue.use(Checkbox);
-// Vue.use(CheckboxGroup);
+import { findLast, callDetail } from "../../request/api";
 const cityOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 export default {
   data() {
     return {
       options: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: "0",
+          label: "全部"
         },
         {
-          value: "选项2",
-          label: "双皮奶"
+          value: "1",
+          label: "已挂断"
         },
         {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
+          value: "2",
+          label: "通话中"
         }
       ],
-      value: "",
-      currentPage3: 1,
+      currentPage: 1,
       list: 9,
-      value1: "",
       checkAll: false,
-      checkedCities: ["上海", "北京"],
+      checkedCities: [],
       cities: cityOptions,
       isIndeterminate: true,
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ],
-      multipleSelection: []
+
+      multipleSelection: [],
+      //接口参数
+      call_num_1: null, //主叫号码
+      called_num_1: null, //被叫号码
+      call_time_1: null, //呼叫时间
+      call_state_1: null, //呼叫状态
+      startTalkTime_1: null, //通话区间
+      endTalkTime_1: null, //通话区间
+      missed_num_1: null, //未接次数
+      pageSize: 9,
+      pageTotal: 50000,
+      // 搜索
+      searchData: {
+        searchStart:null,
+        searchEnd: null,
+        searchCall: null,
+        searchCallEnd: null,
+        searchDate: null,
+        searchType: null
+      },
+      //接口数据
+      myData: null,
+      pieData: null
     };
   },
   components: {
     PieChilds: () => import("@/components/child/PieConversation"),
     NumberChilds: () => import("@/components/child/NumberConversation")
   },
+  watch: {
+    searchData: {
+      handler(val) {
+        this.currentPage = 1
+        this.callDetail();
+        console.log(val);
+      },
+      deep: true //深度监听
+    }
+  },
+  mounted() {
+    this.callDetail();
+    this.findLast();
+  },
   methods: {
+    callDetail() {
+      let json = {
+        call_num: this.searchData.searchStart,
+        called_num: this.searchData.searchEnd,
+        call_time1: this.searchData.searchDate,
+        call_state: this.searchData.searchType,
+        startTalkTime: this.searchData.searchCall,
+        endTalkTime: this.searchData.searchCallEnd,
+        missed_num: this.missed_num_1,
+        page: this.currentPage,
+        size: this.pageSize
+      };
+      for (const key in json) {
+        if (!json[key]) {
+          delete json[key];
+        }
+      }
+      callDetail(json)
+        .then(res => {
+          this.pageTotal = res.result.total;
+          this.myData = res.result.list;
+          // console.log(res.result.list);
+        })
+        .catch(res => {
+          this.$toast("数据异常请联系客服人员！");
+        });
+    },
+    findLast() {
+      findLast()
+        .then(res => {
+          this.pieData = res.result;
+        })
+        .catch(res => {
+          this.$toast("数据异常请联系客服人员！");
+        });
+    },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.callDetail();
+      // console.log(`当前页: ${val}`);
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     fn() {
       this.$bus.emit("ConversationBus");
@@ -240,6 +236,30 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    formatTime(number, format) {
+      let that = this;
+      var formateArr = ["Y", "M", "D", "h", "m", "s"];
+      var returnArr = [];
+
+      var date = new Date(number * 1000);
+      returnArr.push(date.getFullYear());
+      returnArr.push(that.formatNumber(date.getMonth() + 1));
+      returnArr.push(that.formatNumber(date.getDate()));
+
+      returnArr.push(that.formatNumber(date.getHours()));
+      returnArr.push(that.formatNumber(date.getMinutes()));
+      returnArr.push(that.formatNumber(date.getSeconds()));
+
+      for (var i in returnArr) {
+        format = format.replace(formateArr[i], returnArr[i]);
+      }
+      return format;
+    },
+    //数据转化
+    formatNumber(n) {
+      n = n.toString();
+      return n[1] ? n : "0" + n;
     }
   }
 };
@@ -467,12 +487,14 @@ export default {
 .conversationBox /deep/ .el-checkbox {
   color: transparent;
 }
-.conversationBox /deep/ .el-table th,.conversationBox /deep/ .el-table tr{
-background:transparent;
+.conversationBox /deep/ .el-table th,
+.conversationBox /deep/ .el-table tr {
+  background: transparent;
 }
-.conversationBox /deep/ .el-table td, .conversationBox /deep/ .el-table th.is-leaf{
+.conversationBox /deep/ .el-table td,
+.conversationBox /deep/ .el-table th.is-leaf {
   height: 53px;
-  color:rgba(0,217,255,0.60);
-  border-bottom:1px solid rgba(0,217,255,0.4);
+  color: rgba(0, 217, 255, 0.6);
+  border-bottom: 1px solid rgba(0, 217, 255, 0.4);
 }
 </style>

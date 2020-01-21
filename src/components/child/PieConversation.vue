@@ -13,7 +13,7 @@ export default {
       MyName: {}
     };
   },
-  props: ["myEcharts", "type","titleName"],
+  props: ["myEcharts", "dates","titleName"],
   mounted() {
     let that = this;
     let myChart = this.$echarts.init(
@@ -21,14 +21,14 @@ export default {
     );
     let option = {
       title: {
-        text: "80%",
+        text: that.dates+"%",
         x: "center",
         y: "center",
         textStyle: {
           fontWeight: "normal",
           color: "#00d9ff",
           fontFamily: "PangMenZhengDao",
-          fontSize: "30"
+          fontSize: "26"
         }
       },
       color: ["#00d9ff", "#0c7f93"],
@@ -49,12 +49,12 @@ export default {
           },
           data: [
             {
-              value: 80,
+              value: that.dates,
               name: "已使用"
             },
             {
               name: "未使用",
-              value: 20
+              value: 100-Number(that.dates)
             }
           ]
         }

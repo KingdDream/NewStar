@@ -9,6 +9,8 @@
     <Conversation v-if="ConversationShow" />
     <!-- 终端 -->
     <Terminal v-if="TerminalShow" />
+    <!-- 载波 -->
+    <Carrier v-if="CarrierShow" />
     <!-- 承载情况 -->
     <Loadbearing v-if="LoadbearingShow" />
     <!-- 告警信息 -->
@@ -32,6 +34,7 @@ export default {
     return {
       ConversationShow: false,
       TerminalShow: false,
+      CarrierShow:false,
       LoadbearingShow:false,
       AlertShow:false,
       IpthroughputShow:false,
@@ -45,6 +48,7 @@ export default {
   components: {
     Conversation: () => import("@/components/boxs/Conversation"),
     Terminal: () => import("@/components/boxs/Terminal"),
+    Carrier: () => import("@/components/boxs/Carrier"),
     Loadbearing: () => import("@/components/boxs/Loadbearing"),
     Alert: () => import("@/components/boxs/Alert"),
     Ipthroughput: () => import("@/components/boxs/Ipthroughput"),
@@ -60,6 +64,9 @@ export default {
     }
     else if (this.name == "终端监控") {
       this.TerminalShow = true;
+    }
+    else if (this.name == "载波状态") {
+      this.CarrierShow = true;
     }
     else if (this.name == "承载情况") {
       this.LoadbearingShow = true;

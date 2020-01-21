@@ -18,7 +18,7 @@ if (process.env.NODE_ENV == 'production') {
     }
 } else if (process.env.NODE_ENV == 'development') {
     //开发环境
-    axios.defaults.baseURL = 'http://172.20.10.13:8080'
+    axios.defaults.baseURL = 'http://192.168.43.201:8080'
 }
 
 
