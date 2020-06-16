@@ -28,7 +28,7 @@ if (process.env.NODE_ENV == 'production') {
 // post请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
-// 请求拦截器
+// 请求拦截器 
 axios.interceptors.request.use(
     config => {
         return config;
@@ -80,18 +80,9 @@ export function post(url, params) {
         })
     });
 }
-
 function getParams(param) {
     let _v = window.location.href;
-    if (_v.indexOf("userId") > -1) {
-        if (_v.indexOf("appId") > -1) {
 
-        } else {
-            return; // 不是内部APP 提示请在金和APP内部打开 不启用页面
-        }
-    } else {
-        return; // 不是内部APP 提示请在金和APP内部打开 不启用页面
-    }
     // var _v = 'http://192.168.10.97:8081/#/testPaperContainer?userId=6ee5dae1-cb68-4fe5-a71f-0cce68d79b26&curChangeOrg=6ee5dae1-cb68-4fe5-a71f-0cce68d79b26'
     let ret = {};
     let seg = []
@@ -117,7 +108,18 @@ function getParams(param) {
     return ret[param.toLowerCase()] || "";
 
 }
-
+function goodData(x){
+    return JSON.parse(JSON.stringify(x))
+}
+function windowOpen(y){
+    let x = 'http://192.168.43.201:8080/'
+    let z = '/toExcel'
+    window.open(x+y+z)
+}
 Vue.prototype.$getParams = getParams
+//数据优化
+Vue.prototype.$goodData = goodData
+//数据优化
+Vue.prototype.$windowOpen = windowOpen
 // Vue.prototype.$observer = observer
 Vue.prototype.$axios = axios

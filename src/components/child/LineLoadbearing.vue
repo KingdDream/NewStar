@@ -1,5 +1,5 @@
 <template>
-  <div :id="Echart+myEcharts" class="div"></div>
+  <div :id="Echart+echartsName" class="div"></div>
 </template>
 <script>
 var echarts = require("echarts");
@@ -9,10 +9,10 @@ export default {
       Echart: "Echart"
     };
   },
-  props: ["datas", "myEcharts"],
+  props: ["echartData", "echartsName"],
   mounted() {
     var myChart = echarts.init(
-      document.getElementById(this.Echart + this.myEcharts)
+      document.getElementById(this.Echart + this.echartsName)
     );
     var Option = {
       grid: {

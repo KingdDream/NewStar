@@ -1,239 +1,212 @@
 <template>
-  <div class="conversationBox">
-    <div class="conversationLeft">
-      <div class="search-list">
-        <input type="search" placeholder="搜索" />
-        <button class="btn-bt">批量删除</button>
-      </div>
-      <div class="table-list">
-        <div class="table-head">
-          <span>
-            <el-checkbox
-              :indeterminate="isIndeterminate"
-              v-model="checkAll"
-              @change="handleCheckAllChange"
-            ></el-checkbox>
-          </span>
-          <span>终端序列</span>
-          <span>运行状态</span>
-          <span>入网过程</span>
-          <span>坐标</span>
-          <span>操作</span>
+    <div class="conversationBox">
+        <div class="div" v-if="show">
+            <div class="name">
+                <div v-for="item in 8">第{{item}}帧</div>
+            </div>
+            <div v-for="(itemX,indexX) in myEcharts" class="boxY">
+                <div v-if="(itemY.createTime=='99999999999')?false:true"
+                    :style="{width:((itemY.length/num)*100+'%'),background:('linear-gradient(-90deg, rgba('+itemY.color+',0.2), rgba('+itemY.color+',0.8))')}"
+                    v-for="(itemY,indexY) in itemX" class="boxX">
+                    <div v-if="itemY.yid==8?true:false" class="Burst"> 突发{{indexY+1}}</div>
+                    {{itemY.type}}{{itemY.ue_id}}</div>
+            </div>
         </div>
-        <div class="table-child" v-for="(item,index) in cities" :key="index">
-          <span>
-            <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-              <el-checkbox :label="item" :key="item"></el-checkbox>
-            </el-checkbox-group>
-          </span>
-          <span>{{index}}</span>
-          <span><span class="state">运行中</span></span>
-          <span>2017-10-31 23:12:20</span>
-          <span>31.6607006164,110.1638671567</span>
-          <span>删除</span>
-        </div>
-      </div>
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage3"
-        :page-size="100"
-        layout="prev, pager, next, jumper"
-        :total="1000"
-      ></el-pagination>
     </div>
-  </div>
 </template>
 
 <script>
-const cityOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-export default {
-  data() {
-    return {
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
+    import {
+        findUeTimeslot,
+    } from "../../request/api"
+    export default {
+        data() {
+            return {
+                show: false,
+                myEcharts: [[[], [], [], [], []], [[], [], [], [], []], [[], [], [], [], []], [[], [], [], [], []], [[], [], [], [], []], [[], [], [], [], []], [[], [], [], [], []], [[], [], [], [], []],],
+                echart: [],
+                num: 0,
+                list: [],
+            };
         },
-        {
-          value: "选项2",
-          label: "双皮奶"
+        mounted() {
+            this.findUeTimeslot()
         },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
+        methods: {
+            // 时隙监控----beamTimeslot
+            findUeTimeslot() {
+                findUeTimeslot().then(res => {
+                    if (res.result.length > 0) {
+                        res.result.forEach(item => {
+                            item.color1 = item.color
+                            if (item.type == 'NULL8' || item.type == 'NULL') {
+                                item.ue_id = ''
+                            } else {
+                                item.ue_id = " : " + item.ue_id
+                            }
+                            this.myEcharts[item.yid - 1][item.xid - 1] = item
+                        });
+                        this.myEcharts.forEach((item, index) => {
+
+                            item.forEach((x, y) => {
+
+                                if (!x.length) {
+                                    item[y] = {
+                                        beam_id: 124886,
+                                        carrier_id: 124886,
+                                        color: "#4D4DFF",
+                                        count: 77219,
+                                        createTime: "99999999999",
+                                        id: 2630449,
+                                        length: 0,
+                                        type: "NULL8",
+                                        ue_id: 14843,
+                                        xid: y,
+                                        yid: index
+                                    }
+                                }
+                            })
+                        })
+
+                        this.myEcharts[0].forEach(item => {
+                            this.num += item.length
+                        })
+                        this.show = true
+                    }
+
+                }).catch(res => {
+                    this.$toast("数据异常请联系客服人员！");
+                })
+            }, rgb() {//rgb颜色随机
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                var rgb = '(' + r + ',' + g + ',' + b + ')';
+                return rgb;
+            }
+
+
         }
-      ],
-      value: "",
-      currentPage3: 1,
-      list: 9,
-      value1: "",
-      checkAll: false,
-      checkedCities: ["上海", "北京"],
-      cities: cityOptions,
-      isIndeterminate: true
     };
-  },
-  components: {
-    PieChilds: () => import("@/components/child/PieConversation"),
-    NumberChilds: () => import("@/components/child/NumberConversation")
-  },
-  methods: {
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    fn() {
-      this.$bus.emit("ConversationBus");
-    },
-    handleCheckAllChange(val) {
-      this.checkedCities = val ? cityOptions : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedCitiesChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length;
-    }
-  }
-};
 </script>
 
 <style scoped>
-.conversationBox {
-  width: 1128px;
-  height: 873px;
-  margin: auto;
-}
-.conversationLeft {
-  width: 100%;
-  height: 100%;
-}
-.conversationRight {
-  float: left;
-  width: 521px;
-  height: 100%;
-}
-.conversationRight > div:nth-child(1) {
-  display: flex;
-  /* flex-direction: row; */
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 92px 73px 0;
-  box-sizing: border-box;
-}
-.table-list {
-  width: 100%;
-  height: 539px;
-  margin-bottom: 51px;
-}
-/* table */
-.table-head {
-  height: 54px;
-  background: rgba(0, 217, 255, 0.4);
-  opacity: 1;
-  border-radius: 4px 4px 0px 0px;
-  font-size: 14px;
-  font-family: Microsoft YaHei;
-  font-weight: 400;
-  line-height: 53px;
-  color: rgba(0, 217, 255, 1);
-  display: flex;
-}
-.table-child {
-  height: 53px;
-  border-bottom: 1px solid rgba(0, 217, 255, 0.4);
-  font-size: 14px;
-  font-family: Microsoft YaHei;
-  font-weight: 400;
-  line-height: 53px;
-  color: rgba(0, 217, 255, 0.6);
-  display: flex;
-}
-.table-head > span,
-.table-child > span {
-  display: block;
-}
-.table-head > span:nth-child(1),
-.table-child > span:nth-child(1) {
-  width: 128px;
-  overflow: hidden;
-  padding-left: 24px;
-  box-sizing: border-box;
-}
-.table-head > span:nth-child(2),
-.table-child > span:nth-child(2) {
-  width: 128px;
-}
-.table-head > span:nth-child(3),
-.table-child > span:nth-child(3) {
-  width: 192px;
-}
-.table-head > span:nth-child(4),
-.table-child > span:nth-child(4) {
-  width: 320px;
-}
-.table-head > span:nth-child(5),
-.table-child > span:nth-child(5) {
-  width: 320px;
-}
-.table-head > span:nth-child(6),
-.table-child > span:nth-child(6) {
-  width: 104px;
-}
-/* sousuo  */
-.search-list {
-  width: 100%;
-  height: 162px;
-  display: -webkit-flex;
-  justify-content:space-between;
-  padding-top: 110px;
-  box-sizing: border-box;
-}
-input {
-  width: 256px;
-  height: 32px;
-  background: rgba(0, 217, 255, 0.4);
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  border-radius: 4px;
-  padding-left: 14px;
-  box-sizing: border-box;
-}
-.btn-bt {
-  width:83px;
-  height:32px;
-  background:rgba(0,217,255,0.6);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  border-radius:4px;
-  cursor: pointer;
-}
-.state{
-  position: relative;
-  padding-left:14px;
-  box-sizing: border-box
-}
-.state::after{
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 7px;
-  width: 6px;
-  height: 6px;
-  background: red;
-  border-radius: 50%
-}
+    .conversationBox {
+        width: 1128px;
+        height: 873px;
+        margin: auto;
+        padding: 120px 100px 0;
+        box-sizing: border-box;
+    }
+
+    .div {
+        width: 100%;
+        height: 640px;
+        box-sizing: border-box;
+        position: relative;
+
+    }
+
+    .div::after {
+        position: absolute;
+        content: '';
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        height: 105%;
+        background: #07F7FF;
+    }
+
+    .div::before {
+        position: absolute;
+        content: '';
+        left: 0;
+        bottom: 0;
+        width: 110%;
+        height: 3px;
+        background: #07F7FF;
+    }
+
+    .boxY {
+        min-width: 10%;
+        height: 40px;
+        position: relative;
+        margin-bottom: 40px;
+        /* overflow: hidden; */
+    }
+
+    .name {
+        position: absolute;
+        top: 0;
+        right: 100%;
+        width: 80px;
+        height: 100%;
+    }
+
+    .name>div {
+        min-width: 10%;
+        height: 40px;
+        position: relative;
+        margin-bottom: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: rgba(0, 217, 255, 1);;
+    }
+    .name>div::before{
+        position: absolute;
+        content: '';
+        top: 0px;
+        right: -3px;
+        width: 6px;
+        height:100%;
+        background: #07F7FF;
+    }
+
+    .boxX {
+        display: inline-block;
+        height: 100%;
+        text-align: center;
+        line-height: 40px;
+        color: #ffffff;
+        position: relative;
+        /* animation: move 3s 1s linear infinite alternate; */
+        /* border-radius: 10px; */
+    }
+    .Burst{
+        position: absolute;
+        left: 0;
+        top: 80px;
+        width: 100%;
+        height: 100%;
+        color: rgba(0, 217, 255, 1);
+    }
+    .Burst::before{
+        position: absolute;
+        content: '';
+        top: -4px;
+        right:-15px;
+        width:30px;
+        height: 6px;
+        background: #07F7FF;
+    }
+    .boxY::after {
+        position: absolute;
+        left: 0;
+        top: 0;
+        content: '';
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3));
+        /* animation: move 5s 1ms linear infinite; */
+    }
+
+    @keyframes move {
+        0% {
+            left: 0;
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
 </style>

@@ -2,8 +2,8 @@
   <div class="Time">
     <img src="../../assets/img/503DP99.png" alt />
     <div>{{text}}</div>
-    <span class="user" @click="fnUser"></span>
-    <span class="set"></span>
+    <span class="user" @click="fnUser(0)"></span>
+    <!-- <span class="set" @click="fnUser(1)"></span> -->
   </div>
 </template>
 
@@ -15,8 +15,12 @@ export default {
     };
   },
   methods:{
-    fnUser(){
-      this.$bus.emit("SetUp","用户管理");
+    fnUser(x){
+        if(x==0){
+            this.$emit("SetUp","用户管理");
+        }else{
+            this.$emit('SetUp','切换模式')
+        }
     }
   }
 };

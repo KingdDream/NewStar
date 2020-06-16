@@ -1,5 +1,5 @@
 <template>
-  <div :id="Echart+myEcharts" class="div"></div>
+  <div :id="Echart+echartsName" class="div"></div>
 </template>
 <script>
 export default {
@@ -10,11 +10,11 @@ export default {
       MyName: {}
     };
   },
-  props: ["myEcharts", "type"],
+  props: ["echartsName", "type"],
   mounted() {
     let that = this;
     let myChart = this.$echarts.init(
-      document.getElementById(this.Echart + this.myEcharts)
+      document.getElementById(this.Echart + this.echartsName)
     );
     let option = {
       color: ["#00d9ff", "#ffaa00"],

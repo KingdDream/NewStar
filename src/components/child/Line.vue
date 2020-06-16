@@ -1,5 +1,5 @@
 <template>
-  <div :id="Echart+myEcharts" class="div"></div>
+  <div :id="Echart+echartsName" class="div"></div>
 </template>
 <script>
 var echarts = require("echarts");
@@ -9,10 +9,10 @@ export default {
       Echart: "Echart"
     };
   },
-  props: ["datas", "type", "myEcharts"],
+  props: ["echartData", "type", "echartsName"],
   mounted() {
     var myChart = echarts.init(
-      document.getElementById(this.Echart + this.myEcharts)
+      document.getElementById(this.Echart + this.echartsName)
     );
     var Option = {
       grid: {
@@ -221,7 +221,7 @@ export default {
   position: absolute;
   top: 49px;
   left: 0;
-  width: 418px;
-  height: 229px;
+  width: 100%;
+  height: 82%;
 }
 </style>

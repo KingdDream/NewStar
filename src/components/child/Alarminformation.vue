@@ -4,7 +4,7 @@
       <div
         class="listBoxA"
         :id="index==0?'listBoxA':index==1?'listBoxB':''"
-        v-for="(item,index) in datas"
+        v-for="(item,index) in echartData"
         :key="index"
         @click="fn(index)"
       >
@@ -16,7 +16,7 @@
       <div
         class="listBoxA"
         :id="ins==0?'listBoxC':ins==1?'listBoxD':''"
-        v-for="(a,ins) in datas"
+        v-for="(a,ins) in echartData"
         :key="ins+'-'"
         @click="fn(ins)"
       >
@@ -41,10 +41,10 @@ export default {
       speed: 0.4
     };
   },
-  props: ["datas"],
+  props: ["echartData"],
   mounted() {},
   watch: {
-    datas() {
+    echartData() {
       this.divMation();
     }
   },
@@ -52,14 +52,14 @@ export default {
     divMation() {
       var that = this;
       var div = document.getElementById("ListBox");
-      if (that.datas.length < 6) {
+      if (that.echartData.length < 6) {
         return false;
       }
 
       //列表运动
       function Timer() {
         that.num += that.speed;
-        if (that.num >= that.datas.length * 39) {
+        if (that.num >= that.echartData.length * 39) {
           that.num = 0;
         }
         div.style.marginTop = -that.num + "px";

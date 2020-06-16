@@ -1,5 +1,5 @@
 <template>
-  <div :id="Echart+myEcharts" class="div"></div>
+  <div :id="Echart+echartsName" class="div"></div>
 </template>
 <script>
 var echarts = require("echarts");
@@ -12,7 +12,7 @@ export default {
       myDataC: []
     };
   },
-  props: ["datas", "myEcharts"],
+  props: ["echartData", "echartsName"],
   mounted() {
     this.fn();
   },
@@ -20,32 +20,32 @@ export default {
     fn() {
       var that = this;
 
-      that.datas.forEach((a, b) => {
+      that.echartData.forEach((a, b) => {
         that.myDataA.push(a.create_time.split(' ')[1]);
-        if (that.myEcharts == "A") {
+        if (that.echartsName == "A") {
           that.myDataB.push(a.out_anc_bytes);
           that.myDataC.push(a.in_anc_bytes);
         }
-        if (that.myEcharts == "B") {
+        if (that.echartsName == "B") {
           that.myDataB.push(a.to_mod_bytes);
           that.myDataC.push(a.from_demod_bytes);
         }
-        if (that.myEcharts == "C") {
+        if (that.echartsName == "C") {
           that.myDataB.push(a.out_rlc_bytes);
           that.myDataC.push(a.in_rlc_bytes);
         }
-        if (that.myEcharts == "D") {
+        if (that.echartsName == "D") {
           that.myDataB.push(a.out_pdcp_bytes);
           that.myDataC.push(a.in_pdcp_bytes);
         }
-        if (that.myEcharts == "E") {
+        if (that.echartsName == "E") {
           that.myDataB.push(a.out_rrc_bytes);
           that.myDataC.push(a.in_rrc_bytes);
         }
       });
 
       var myChart = echarts.init(
-        document.getElementById(this.Echart + this.myEcharts)
+        document.getElementById(this.Echart + this.echartsName)
       );
       var Option = {
         grid: {

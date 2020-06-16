@@ -1,8 +1,8 @@
 <template>
   <div class="divpie">
-    <div :id="Echart+myEcharts" class="div"></div>
+    <div :id="Echart+echartsName" class="div"></div>
     <span class="span">{{titleName}}</span>
-    <span class="spanNum" :style="{'color':color==1?'#00d9ff':'#ffaa00'}">{{99}}<span>{{dw}}</span></span>
+    <span class="spanNum" :style="{'color':color==1?'#00d9ff':'#ffaa00'}">{{echartData?echartData:0}}<span></span></span>
   </div>
 </template>
 <script>
@@ -14,11 +14,11 @@ export default {
       MyName: {},
     };
   },
-  props: ["myEcharts", "type","bg","color", "titleName","dw"],
+  props: ["echartsName", "echartData","type","bg","color", "titleName","dw"],
   mounted() {
     let that = this;
     let myChart = this.$echarts.init(
-      document.getElementById(this.Echart + this.myEcharts)
+      document.getElementById(this.Echart + this.echartsName)
     );
     let option = {
       color: [that.bg==1?"#00d9ff":"#ffaa00","#0c7f93",],
@@ -91,7 +91,7 @@ export default {
   width: 192px;
   height: 192px;
   text-align: center;
-  font-size: 52px;
+  font-size: 46px;
   font-weight: 400;
   line-height: 192px;
   /* color: rgba(0, 217, 255, 1); */

@@ -19,7 +19,6 @@
 </template>
 
 <script>
-const cityOptions = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export default {
   data() {
     return {
@@ -28,28 +27,7 @@ export default {
         { a: "部门设置", b: "#FFAA00" },
         { a: "权限设置", b: "#00D9FF" }
       ],
-      options: [
-        {
-          value: "选项1",
-          label: "删除用户"
-        },
-        {
-          value: "选项2",
-          label: "更改部门"
-        },
-        {
-          value: "选项3",
-          label: "更改权限"
-        }
-      ],
-      value: "",
-      currentPage3: 1,
-      list: 9,
-      value1: "",
-      checkAll: false,
-      checkedCities: ["上海", "北京"],
-      cities: cityOptions,
-      isIndeterminate: true,
+      
       active: 0,
       tableShow: false
     };
@@ -60,9 +38,7 @@ export default {
     'Userchild-c': () => import("@/components/Setup/Jurisdiction"),
   },
   methods: {
-    fnsss(a){
-      console.log(1)
-    },
+    
     AddFn(){
       this.tableShow = !this.tableShow;
     },
@@ -75,25 +51,6 @@ export default {
     ActiveTab(i) {
       this.active = i;
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    fn() {
-      this.$bus.emit("ConversationBus");
-    },
-    handleCheckAllChange(val) {
-      this.checkedCities = val ? cityOptions : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedCitiesChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length;
-    }
   }
 };
 </script>

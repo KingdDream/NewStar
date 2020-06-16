@@ -13,7 +13,7 @@ export default {
       MyName: {}
     };
   },
-  props: ["myEcharts", "dates","titleName"],
+  props: ["myEcharts", "echartData","titleName"],
   mounted() {
     let that = this;
     let myChart = this.$echarts.init(
@@ -21,7 +21,7 @@ export default {
     );
     let option = {
       title: {
-        text: that.dates+"%",
+        text: that.echartData+"%",
         x: "center",
         y: "center",
         textStyle: {
@@ -49,12 +49,12 @@ export default {
           },
           data: [
             {
-              value: that.dates,
+              value: that.echartData,
               name: "已使用"
             },
             {
               name: "未使用",
-              value: 100-Number(that.dates)
+              value: 100-Number(that.echartData)
             }
           ]
         }

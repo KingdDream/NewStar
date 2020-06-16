@@ -6,7 +6,7 @@ export default {
     data() {
         return {};
     },
-    props: ["datas", "myEcharts"],
+    props: ["echartData", "myEcharts"],
     mounted() {
         var myChart = this.$echarts.init(document.getElementById(this.myEcharts));
         myChart.setOption({
@@ -154,6 +154,7 @@ export default {
                 }
             ]
         });
+    
     },
     methods: {}
 };

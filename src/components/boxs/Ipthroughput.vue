@@ -2,23 +2,23 @@
   <div id="MaskBox" v-if="myData==null?show:!show">
     <div>
       <span>上下行数据流量</span>
-      <Ipthroughput :datas="myData" myEcharts="A" />
+      <Ipthroughput :echartData="myData" echartsName="A" />
     </div>
     <div>
       <span>上下行链路流量</span>
-      <Ipthroughput :datas="myData" myEcharts="B" />
+      <Ipthroughput :echartData="myData" echartsName="B" />
     </div>
     <div>
       <span>rlc上下行</span>
-      <Ipthroughput :datas="myData" myEcharts="C" />
+      <Ipthroughput :echartData="myData" echartsName="C" />
     </div>
     <div>
       <span>pdcp上下行</span>
-      <Ipthroughput :datas="myData" myEcharts="D" />
+      <Ipthroughput :echartData="myData" echartsName="D" />
     </div>
     <div>
       <span>rrc上下行</span>
-      <Ipthroughput :datas="myData" myEcharts="E" />
+      <Ipthroughput :echartData="myData" echartsName="E" />
     </div>
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
     findLatest(){
       findLatest().then(res => {
         this.myData = res.result
-        console.log(this.myData)
+        // console.log(this.myData)
         // console.log(res.result)
       }).catch(res => {
         this.$toast("数据异常请联系客服人员！");
