@@ -142,6 +142,17 @@
                     }
                 })
             },
+            //vuex设置权限
+            vuexSetJurisdiction(id) {
+                let data = {
+                    uid: id
+                };
+                findPermissionsByUID(data).then(res => {
+                    if (res.code == '000000') {
+                        this.$store.commit('stateResult', res.result)
+                    }
+                })
+            },
 
             //组权限
             findPermissionsGroup(id) {
@@ -254,6 +265,10 @@
                             }
                         }
                     })
+
+                    setTimeout(() => {
+                        this.vuexSetJurisdiction(this.$store.state.id)
+                    },50)
 
                 } else {
 

@@ -163,7 +163,10 @@
             },
             //添加组别
             AddFn(x) {
-
+                if(this.$store.state.result[7].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.tableShow = !this.tableShow;
                 if (x == 1) {
                     this.addGroup()
@@ -194,6 +197,10 @@
                         this.listGroup()
                     }, 50)
                 } else {
+                    if(this.$store.state.result[8].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                     this.maskShow = true
                     this.confirmMaskShow = true
                 }
@@ -202,6 +209,10 @@
             },
             //设置组别
             setOrganization(item) {
+                if(this.$store.state.result[9].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.Organization = item
                 this.maskShow = true
                 this.setmaskShow = true

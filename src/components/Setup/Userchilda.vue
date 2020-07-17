@@ -246,6 +246,10 @@
             },
             //添加用户
             AddFn(x) {
+                if(this.$store.state.result[0].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 if (x == 1) {
 
                     for (const key in this.createdData) {
@@ -286,11 +290,16 @@
                     return false
                 }
                 if (x == 1) {
+                    if(this.$store.state.result[2].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                     //设置用户
                     this.maskShow = true
                     this.confirmMaskShow = true
 
                 } else {
+                    
                     if (this.deleted.length > 1) {
                         this.$toast("只能选择一个！");
                         return false
@@ -316,6 +325,10 @@
             },
             //修改用户
             modifyClick(data) {
+                if(this.$store.state.result[1].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.maskShow = true
                 this.modifyMaskShow = true
                 this.modifyData = data

@@ -11,7 +11,7 @@
             <div class="aperture2" v-if="show"></div>
             <div class="Eart">
                 <MapQ v-show="MapEart" />
-                <MapD v-if="MapWorld" />
+                <!-- <MapD v-if="MapWorld" /> -->
             </div>
         </div>
         <!-- 左侧 -->
@@ -53,10 +53,12 @@
 </template>
 
 <script>
+    import { findPermissionsByUID } from '../request/api'; //先要引入
     export default {
         data() {
             return {
-                ip: "ws://192.168.43.201:8080/",
+                // ip: "ws://192.168.43.201:8080/",
+                ip:"ws://192.168.1.104:8080/cms/",
                 show: true,
                 MapEart: true,
                 MapWorld: false,
@@ -68,10 +70,11 @@
                     b: null
                 },
                 bearing: null,
-                warning: null
+                warning: null,
             };
         },
         mounted() {
+
             if (this.$route.query.id) {
                 //通话时长----call
                 this.dddd = this.wsData("call", this.$route.query.id);
@@ -91,19 +94,21 @@
                 this.wsData("ue", this.$route.query.id);
             }
             //bus
-            this.$bus.on("hide", () => {
-                this.show = false;
-                this.MapWorld = true;
-                setTimeout(x => {
-                    this.MapEart = false;
-                }, 2100);
-            });
+            // this.$bus.on("hide", () => {
+            //     this.show = false;
+            //     this.MapWorld = true;
+            //     setTimeout(x => {
+            //         this.MapEart = false;
+            //     }, 2100);
+            // });
             this.$bus.on("MaskOver", () => {
                 document.getElementById("boxImg").setAttribute("class", "box");
                 this.show = !this.show;
                 this.MapEart = !this.MapEart;
                 this.MaskShow = !this.MaskShow;
+                this.$store.commit('stateTitle_show', true);
             });
+            this.setId()
 
         },
         components: {
@@ -119,19 +124,46 @@
             User: () => import("@/components/Setup/User")
         },
         methods: {
+            setId() {
+                this.$store.commit('stateId', this.$route.query.id)
+                this.vuexSetJurisdiction(this.$route.query.id)
+            },
+            //vuex设置权限
+            vuexSetJurisdiction(id) {
+                let data = {
+                    uid: id
+                };
+                findPermissionsByUID(data).then(res => {
+                    if (res.code == '000000') {
+                        this.$store.commit('stateResult', res.result)
+                    }
+                })
+            },
             SetUp(val) {
-                if (val == '用户管理') {
-                    document
-                        .getElementById("boxImg")
-                        .setAttribute("class", "box boxImg");
-                    this.titleName = val;
-                    this.MapEart = !this.MapEart;
-                    this.show = !this.show;
-                    this.MaskShow = !this.MaskShow;
-                }else{
-                    this.MapWorld = !this.MapWorld
-                    this.MapEart = !this.MapEart;
-                    this.show = !this.show;
+
+                switch (val) {
+                    case '用户管理':
+                        document
+                            .getElementById("boxImg")
+                            .setAttribute("class", "box boxImg");
+                        this.$store.commit('stateTitle_show', !this.$store.state.title_show);
+                        this.titleName = val;
+                        this.MapEart = !this.MapEart;
+                        this.show = !this.show;
+                        this.MaskShow = !this.MaskShow;
+
+                        break;
+                    case '切换模式':
+                    this.$store.commit('stateTitle_show1', !this.$store.state.title_show1);
+                        this.MapWorld = !this.MapWorld
+                        this.MapEart = !this.MapEart;
+                        this.show = !this.show;
+                        break;
+                    // case 2:
+                    //     this.$emit("SetUp", "切换模式");stateTitle_show
+                    //     break;
+                    default:
+                        return
                 }
 
             },
@@ -144,6 +176,7 @@
                 this.show = !this.show;
                 this.MapEart = !this.MapEart;
                 this.MaskShow = !this.MaskShow;
+                this.$store.commit('stateTitle_show', !this.$store.state.title_show);
             },
             // 推送数据
             wsData(x, y) {

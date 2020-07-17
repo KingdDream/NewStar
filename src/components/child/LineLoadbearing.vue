@@ -106,6 +106,7 @@ export default {
           symbolSize: 6,
           lineStyle: {
             normal: {
+                width:0.5,
               color: "rgb(255,170,0)" // 线条颜色
             }
           },
@@ -148,7 +149,8 @@ export default {
           symbolSize: 6,
           lineStyle: {
             normal: {
-              color: "rgb(0,217,255)" // 线条颜色
+              color: "rgb(0,217,255)" ,// 线条颜色
+              width:0.5
             }
           },
           label: {

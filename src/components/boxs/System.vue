@@ -190,6 +190,10 @@
                 this.findDetails(id);
             },
             cancel(x) {
+                if(this.$store.state.result[17].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.maskShow = true
                 this.confirmMaskShow = true
                 if (x) {

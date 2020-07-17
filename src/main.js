@@ -10,6 +10,9 @@ import Echarts from 'echarts'
 import EchartsGL from 'echarts-gl'
 import 'element-ui/lib/theme-chalk/index.css';
 import Element from 'element-ui';
+
+//vuex
+import store from './store'
 // 移动端base.css
 import './assets/css/base.css'
 
@@ -25,5 +28,6 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })

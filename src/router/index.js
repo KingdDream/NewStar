@@ -13,7 +13,7 @@ export default new Router({
     {
       path: '/Satellite',
       name: 'Satellite',
-      component: () => import('@/components/Satellite') 
+      component: () => import('@/components/Satellite')
     }
   ]
 })

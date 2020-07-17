@@ -11,14 +11,15 @@ if (process.env.NODE_ENV == 'production') {
     // npm run build test
     if (process.env.PLATFORM == 'test') {
         //测试环境
-        axios.defaults.baseURL = '';
+        axios.defaults.baseURL = 'http://192.168.1.104:8080/cms'
     } else if (process.env.PLATFORM == 'pro') {
         //正式环境
-        axios.defaults.baseURL = '';
+        axios.defaults.baseURL = 'http://192.168.1.104:8080/cms'
     }
 } else if (process.env.NODE_ENV == 'development') {
     //开发环境
     axios.defaults.baseURL = 'http://192.168.43.201:8080'
+    // axios.defaults.baseURL = 'http://192.168.1.104:8080/cms'
 }
 
 
@@ -112,7 +113,7 @@ function goodData(x){
     return JSON.parse(JSON.stringify(x))
 }
 function windowOpen(y){
-    let x = 'http://192.168.43.201:8080/'
+    let x = 'http://192.168.1.104:8080/cms'
     let z = '/toExcel'
     window.open(x+y+z)
 }

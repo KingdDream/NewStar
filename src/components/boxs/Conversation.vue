@@ -84,7 +84,7 @@
 
 <script>
     import { findLast, callDetail, clickremove ,toExcelCall} from "../../request/api";
-    const cityOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    
     export default {
         data() {
             return {
@@ -104,10 +104,6 @@
                 ],
                 currentPage: 1,
                 list: 9,
-                checkAll: false,
-                checkedCities: [],
-                cities: cityOptions,
-                isIndeterminate: true,
 
                 multipleSelection: [],
                 //接口参数
@@ -156,6 +152,7 @@
         mounted() {
             this.callDetail();
             this.findLast();
+           
         },
         methods: {
             callDetail() {
@@ -212,6 +209,10 @@
             },
             //点击删除
             cancel(x){
+                if(this.$store.state.result[19].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.ids = x
                 this.maskShow = true
                 this.confirmMaskShow = true
@@ -238,16 +239,7 @@
             downloadMask(){
                this.$windowOpen('call')
             },
-            handleCheckAllChange(val) {
-                this.checkedCities = val ? cityOptions : [];
-                this.isIndeterminate = false;
-            },
-            handleCheckedCitiesChange(value) {
-                let checkedCount = value.length;
-                this.checkAll = checkedCount === this.cities.length;
-                this.isIndeterminate =
-                    checkedCount > 0 && checkedCount < this.cities.length;
-            },
+            
             toggleSelection(rows) {
                 if (rows) {
                     rows.forEach(row => {

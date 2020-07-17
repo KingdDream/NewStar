@@ -5,16 +5,32 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state:{
-        num:1
+        entry_name:"东方红卫星移动通信有限公司",
+        title_show:true,
+        title_show1:true,
+        id:null,
+        result:[]
     },
     mutations:{
-        stateNum(state,obj){
-            state.num = obj
+        stateId(state,obj){
+            state.id = obj
+        },
+        stateResult(state,obj){
+            state.result = obj
+        },
+        stateTitle_show(state,obj){
+            state.title_show = obj
+        },
+        stateTitle_show1(state,obj){
+            state.title_show1 = obj
         }
     },
     actions:{
-        actionNum(context,obj){
-            context.commit('stateNum',obj)
+        actionId(context,obj){
+            context.commit('stateId',obj)
+        },
+        actionResult(context,obj){
+            context.commit('stateResult',obj)
         }
     }
 })

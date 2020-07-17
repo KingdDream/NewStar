@@ -2,7 +2,6 @@
     <div class="conversationBox">
         <div class="conversationLeft">
             <div class="search-list">
-                <input v-if="searchShow" type="search" placeholder="搜索" />
                 <button v-if="cancelShow" class="btn-bt" @click="cancel()">批量删除</button>
             </div>
             <div class="table-list">
@@ -13,7 +12,7 @@
                     </span>
                     <span>终端序列</span>
                     <span>运行状态</span>
-                    <span>入网过程</span>
+                    <span>入网时间</span>
                     <span>坐标</span>
                     <span>操作</span>
                 </div>
@@ -24,7 +23,7 @@
                         </el-checkbox-group>
                     </span>
                     <span>{{item.id}}</span>
-                    <span><span class="state">{{item.status}}</span></span>
+                    <span><span :class="item.status == 0 ? 'state_red':'state_blue'">{{item.status == 0 ?'在线':'离线'}}</span></span>
                     <span>{{item.create_time}}</span>
                     <span>经度：{{item.longitude}}，纬度：{{item.latitude}}</span>
                     <span @click="cancel(item.id)" style="cursor: pointer;">删除</span>
@@ -128,6 +127,10 @@
                 })
             },
             cancel(x) {
+                if(this.$store.state.result[18].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.maskShow = true
                 this.confirmMaskShow = true
                 if (x) {
@@ -309,20 +312,8 @@
         width: 100%;
         height: 162px;
         display: -webkit-flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         padding-top: 110px;
-        box-sizing: border-box;
-    }
-
-    input {
-        width: 256px;
-        height: 32px;
-        background: rgba(0, 217, 255, 0.4);
-        border: 1px solid rgba(0, 0, 0, 0.14);
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 14px;
-        border-radius: 4px;
-        padding-left: 14px;
         box-sizing: border-box;
     }
 
@@ -336,20 +327,36 @@
         cursor: pointer;
     }
 
-    .state {
+    .state_red {
         position: relative;
         padding-left: 14px;
         box-sizing: border-box
     }
 
-    .state::after {
+    .state_red::after {
         content: '';
         position: absolute;
         left: 0;
         top: 7px;
         width: 6px;
         height: 6px;
-        background: red;
+        background: green;
+        border-radius: 50%
+    }
+    .state_blue {
+        position: relative;
+        padding-left: 14px;
+        box-sizing: border-box
+    }
+
+    .state_blue::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 7px;
+        width: 6px;
+        height: 6px;
+        background:red;
         border-radius: 50%
     }
 </style>

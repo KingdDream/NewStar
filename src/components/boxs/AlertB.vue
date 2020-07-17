@@ -149,6 +149,10 @@
                 })
             },
             cancel(x) {
+                if(this.$store.state.result[16].state == false){
+                    this.$toast('该用户没有此权限！')
+                    return false
+                }
                 this.maskShow = true
                 this.confirmMaskShow = true
                 if (x) {

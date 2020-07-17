@@ -64,10 +64,11 @@
     }
 
     .activebox {
-        width: 1384px;
+        width: 1128px;
         height: 121px;
         margin: auto;
         border-bottom: 1px solid rgba(0, 219, 255, 0.5);
+        padding-left: 58px;
         box-sizing: border-box;
     }
 
@@ -80,7 +81,7 @@
     }
 
     .activebox>div>div {
-        padding: 0 40px;
+        padding: 0 82px;
         height: 24px;
         font-size: 18px;
         font-weight: 400;

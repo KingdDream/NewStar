@@ -29,6 +29,7 @@ export default {
       //实时时间
       setInterval(() => {
         this.timer += 1
+        localStorage.setItem('timer',this.timer)
         this.SHIJIAN();
         let my =  new Date();
 
